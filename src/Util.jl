@@ -4,7 +4,7 @@ import JACC
 
 be_verbose::Bool = false
 function verbose(v = true)
-    be_verbose = v
+    global be_verbose = v
     return nothing
 end
 
