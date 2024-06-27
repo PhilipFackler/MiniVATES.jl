@@ -27,6 +27,10 @@ Adapt.@adapt_structure Hist3
 
 @inline nbins(h::Hist3) = h.nbins
 
+@inline origin(h::Hist3) = h.origin
+
+@inline boxLength(h::Hist3) = h.boxLength
+
 @inline binweights(h::Hist3) = h.weights
 
 @inline function reset!(h::Hist3)

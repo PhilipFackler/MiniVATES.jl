@@ -83,7 +83,7 @@ tmfmt(tm::AbstractFloat) = @sprintf("%3.6f", tm)
         binEventsTime = dur
         binAvg += dur
 
-        for r = 0:(commSize-1)
+        for r = 0:(commSize - 1)
             if rank == r
                 println(
                     "rank: ",
@@ -113,4 +113,16 @@ tmfmt(tm::AbstractFloat) = @sprintf("%3.6f", tm)
     end
 
     return (signal, eventsHist)
+end
+
+function mergeHistogramToRootProcess(hist::Hist3)
+    weights = MPI.Reduce(Core.Array(binweights(hist)), .+, MPI.COMM_WORLD)
+    x, y, z = edges(hist)
+    return Hist3(
+        (Core.Array(x), Core.Array(y), Core.Array(z)),
+        nbins(hist),
+        origin(hist),
+        boxLength(hist),
+        weights,
+    )
 end

@@ -34,9 +34,11 @@ dur = @elapsed begin
         C3[1.0 1.0 0.0; 1.0 -1.0 0.0; 0.0 0.0 1.0],
     )
 
-    write_cat(signal, h)
+    signalMerged = MiniVATES.mergeHistogramToRootProcess(signal)
+    hMerged = MiniVATES.mergeHistogramToRootProcess(h)
 end
 
 if MPI.Comm_rank(MPI.COMM_WORLD) == 0
+    write_cat(signalMerged, hMerged)
     println("Total app time: ", dur, "s")
 end
