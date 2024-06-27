@@ -8,6 +8,7 @@
 #SBATCH -N 1
 #SBATCH -G 4
 
+export JULIA_DEPOT_PATH=/lustre/polis/csc266/scratch/4pf/julia_depot
 cd /lustre/polis/csc266/scratch/4pf/MiniVATES.jl
 
 srun -n 4 --gpus-per-task=1 julia --project test/benzil_corelli.jl
