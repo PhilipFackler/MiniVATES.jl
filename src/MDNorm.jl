@@ -11,7 +11,7 @@ mutable struct MDNorm{TArray}
     hX::TArray
     kX::TArray
     lX::TArray
-    eX::TArray
+    # eX::TArray
     extrasData::ExtrasData
 
     intersections::PreallocJaggedArray{Crd4}
@@ -34,7 +34,7 @@ mutable struct MDNorm{TArray}
             hx,
             kx,
             lx,
-            TArray(),
+            # TArray(),
             extrasData,
             intersections,
             # iPerm,
@@ -50,7 +50,7 @@ mutable struct MDNorm{TArray}
         maxIx = _maxIntersections(hx, kx, lx)
         intersections = PreallocJaggedArray{Crd4}(1, maxIx)
         yValues = PreallocJaggedArray{ScalarType}(1, maxIx)
-        new{TArray}(hx, kx, lx, TArray(), ExtrasData(), intersections, yValues)
+        new{TArray}(hx, kx, lx, #= TArray(), =# ExtrasData(), intersections, yValues)
     end
 end
 
