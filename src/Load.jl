@@ -328,7 +328,7 @@ mutable struct EventData
     thetaValues::Array1c
     phiValues::Array1c
     detIDs::Array1{SizeType}
-    events::SubArray
+    events::AbstractArray
 end
 
 @inline function updateEvents!(data::EventData, ws::EventWorkspace)
