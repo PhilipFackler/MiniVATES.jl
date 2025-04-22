@@ -329,6 +329,52 @@ end
     return ds
 end
 
+@inline function _getBoxTypeDataset(ws::FastEventWorkspace)
+    ds = ws.file["MDEventWorkspace"]["box_structure"]["box_type"]
+    dims, _ = HDF5.get_extent_dims(ds)
+    @assert length(dims) == 1
+    return ds
+end
+
+@inline function getBoxType(ws::FastEventWorkspace)
+    return adapt_structure(JACCArray, read(_getBoxTypeDataset(ws)))
+end
+
+@inline function _getBoxExtents(ws::FastEventWorkspace)
+    ds = ws.file["MDEventWorkspace"]["box_structure"]["extents"]
+    dims, _ = HDF5.get_extent_dims(ds)
+    @assert length(dims) == 2
+    @assert dims[2] == 6
+    return ds
+end
+
+@inline function getBoxExtents(ws::FastEventWorkspace)
+    return adapt_structure(JACCArray, view(read(_getBoxExtents(ws)), :, :))
+end
+
+@inline function _getBoxSignalDataset(ws::FastEventWorkspace)
+    ds = ws.file["MDEventWorkspace"]["box_structure"]["box_signal"]
+    dims, _ = HDF5.get_extent_dims(ds)
+    @assert length(dims) == 1
+    return ds
+end
+
+@inline function getBoxSignal(ws::FastEventWorkspace)
+    return adapt_structure(JACCArray, read(_getBoxSignalDataset(ws)))
+end
+
+@inline function _getEventIndexDataset(ws::FastEventWorkspace)
+    ds = ws.file["MDEventWorkspace"]["box_structure"]["box_event_index"]
+    dims, _ = HDF5.get_extent_dims(ds)
+    @assert length(dims) == 2
+    @assert dims[2] == 2
+    return ds
+end
+
+@inline function getEventIndex(ws::FastEventWorkspace)
+    return adapt_structure(JACCArray, view(read(_getEventIndexDataset(ws)), :, :))
+end
+
 @inline function getEvents(ws::EventWorkspace)
     return adapt_structure(JACCArray, view(read(_getEventsDataset(ws)), :, :))
 end
@@ -376,6 +422,10 @@ end
 mutable struct FastEventData
     protonCharge::ScalarType
     events::AbstractArray
+    boxType::Array1{UInt8}
+    extents::AbstractArray
+    signal::Array1r
+    eventIndex::AbstractArray
 end
 
 @inline function updateEvents!(data::EventData, ws::EventWorkspace)
@@ -386,7 +436,15 @@ end
 
 @inline function updateEvents!(data::FastEventData, ws::FastEventWorkspace)
     unsafe_free!(parent(data.events))
+    unsafe_free!(parent(data.boxType))
+    unsafe_free!(parent(data.extents))
+    unsafe_free!(parent(data.signal))
+    unsafe_free!(parent(data.eventIndex))
     data.events = getEvents(ws)
+    data.boxType = getBoxType(ws)
+    data.extents = getBoxExtents(ws)
+    data.signal = getBoxSignal(ws)
+    data.eventIndex = getEventIndex(ws)
     return nothing
 end
 
@@ -447,9 +505,17 @@ function loadFastEventData(event_nxs_file::AbstractString)
     let ws = FastEventWorkspace(event_nxs_file)
         protonCharge = getProtonCharge(ws)
         events = getEvents(ws)
+	boxType = getBoxType(ws)
+	boxExtents = getBoxExtents(ws)
+	boxSignal = getBoxSignal(ws)
+	eventIndex = getEventIndex(ws)
         return FastEventData(
             protonCharge,
             events,
+	    boxType,
+	    boxExtents,
+	    boxSignal,
+	    eventIndex
         )
     end
 end

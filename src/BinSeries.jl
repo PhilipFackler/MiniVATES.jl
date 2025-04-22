@@ -62,8 +62,8 @@ tmfmt(tm::AbstractFloat) = @sprintf("%3.6f s", tm)
             exData.rotMatrix = getRotationMatrix(extrasWS)
         end
 
-        #updateEventsTime = nothing
-        #let eventWS = EventWorkspace(eventFile)
+	#updateEventsTime = nothing
+	#let eventWS = EventWorkspace(eventFile)
         #    eventData.protonCharge = getProtonCharge(eventWS)
         #    dur = @elapsed updateEvents!(eventData, eventWS)
         #    updateEventsTime = dur
@@ -84,7 +84,8 @@ tmfmt(tm::AbstractFloat) = @sprintf("%3.6f s", tm)
         mdNormTime = dur
         mdnAvg += dur
 
-        dur = @elapsed binEvents!(eventsHist, fastEventData.events, transforms2)
+	dur = @elapsed binBoxes!(eventsHist, fastEventData, transforms2)
+        #dur = @elapsed binEvents!(eventsHist, fastEventData.events, transforms2)
         binEventsTime = dur
         binAvg += dur
 
