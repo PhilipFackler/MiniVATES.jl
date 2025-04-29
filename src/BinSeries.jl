@@ -70,10 +70,17 @@ tmfmt(tm::AbstractFloat) = @sprintf("%3.6f s", tm)
                 updateEventsTime = dur
                 updAvg += dur
             end
-    elseif startswith(options.binmd, "boxes") || startswith(options.binmd, "columns")
+        elseif startswith(options.binmd, "columns")
             let eventWS = FastEventWorkspace(fastEventFile)
                 eventData.protonCharge = getProtonCharge(eventWS)
                 dur = @elapsed updateEvents!(fastEventData, eventWS, false)
+                updateEventsTime = dur
+                updAvg += dur
+            end
+        elseif startswith(options.binmd, "boxes")
+            let eventWS = FastEventWorkspace(fastEventFile)
+                eventData.protonCharge = getProtonCharge(eventWS)
+                dur = @elapsed updateEvents!(fastEventData, eventWS, true)
                 updateEventsTime = dur
                 updAvg += dur
             end
