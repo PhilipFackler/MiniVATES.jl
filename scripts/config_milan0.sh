@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MV_DIR=/home/svh/MiniVATES.jl
+MV_DIR=/home/4pf/MiniVATES.jl
 
 module load nvhpc
 
