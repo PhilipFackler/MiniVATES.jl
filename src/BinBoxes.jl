@@ -8,7 +8,7 @@ function binMD!(h::Hist3, events::AbstractArray, weights::AbstractArray, op::Squ
     end
 end
 
-function binBoxes!(h::Hist3, events::FastEventData, transforms::AbstractArray)
+function binBoxes!(h::Hist3, events::FastEventData, transforms)
     JACC.parallel_for(
         length(events.boxType),
         (i, t) -> begin
@@ -62,9 +62,10 @@ function binBoxes!(h::Hist3, events::FastEventData, transforms::AbstractArray)
                         localweights = @view t.weights[startId:stopId]
                         for n = 1:size(localevents, 1)
                             col = C3[localevents[n, 1], localevents[n, 2], localevents[n, 3]]
+			    weight = localweights[n]
                             for op in t.transforms
                                 v = op * col
-                                atomic_push!(h, v[1], v[2], v[3], localweights[n])
+				atomic_push!(h, v[1], v[2], v[3], weight)
                             end
                         end
                     end

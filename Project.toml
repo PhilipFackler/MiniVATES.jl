@@ -7,6 +7,8 @@ version = "0.1.0"
 Adapt = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
 ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
 Atomix = "a9b6321e-bd34-4604-b9c9-b65b8de01458"
+CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
+Cthulhu = "f68482b8-f384-11e8-15f7-abe071a5a75f"
 HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
 JACC = "0979c8fe-16a4-4796-9b82-89a9f10403ea"
 MPI = "da04e1cc-30fd-572f-bb4f-1f8673147195"
@@ -17,6 +19,8 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
 ArgParse = "1.2.0"
+CUDA = "5.6.1"
+Cthulhu = "2.16.5"
 JACC = "0.3.1"
 
 [extras]
