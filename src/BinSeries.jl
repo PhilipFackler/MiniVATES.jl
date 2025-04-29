@@ -63,24 +63,17 @@ tmfmt(tm::AbstractFloat) = @sprintf("%3.6f s", tm)
         end
 
         updateEventsTime = nothing
-        if options.binmd == "mantid"
+        if startswith(options.binmd, "mantid")
             let eventWS = EventWorkspace(eventFile)
                 eventData.protonCharge = getProtonCharge(eventWS)
                 dur = @elapsed updateEvents!(eventData, eventWS)
                 updateEventsTime = dur
                 updAvg += dur
             end
-        elseif options.binmd == "columns"
+    elseif startswith(options.binmd, "boxes") || startswith(options.binmd, "columns")
             let eventWS = FastEventWorkspace(fastEventFile)
                 eventData.protonCharge = getProtonCharge(eventWS)
                 dur = @elapsed updateEvents!(fastEventData, eventWS, false)
-                updateEventsTime = dur
-                updAvg += dur
-            end
-        elseif options.binmd == "boxes"
-            let eventWS = FastEventWorkspace(fastEventFile)
-                eventData.protonCharge = getProtonCharge(eventWS)
-                dur = @elapsed updateEvents!(fastEventData, eventWS, true)
                 updateEventsTime = dur
                 updAvg += dur
             end
@@ -96,15 +89,27 @@ tmfmt(tm::AbstractFloat) = @sprintf("%3.6f s", tm)
             dur = @elapsed binEvents!(eventsHist, eventData.events, transforms2)
             binEventsTime = dur
             binAvg += dur
+        elseif options.binmd == "mantid1d"
+            dur = @elapsed binEvents1d!(eventsHist, eventData.events, transforms2)
+            binEventsTime = dur
+            binAvg += dur
         elseif options.binmd == "columns"
             dur = @elapsed binEvents!(eventsHist, fastEventData.events, fastEventData.weights, transforms2)
+            binEventsTime = dur
+            binAvg += dur
+        elseif options.binmd == "columns1d"
+            dur = @elapsed binEvents1d!(eventsHist, fastEventData.events, fastEventData.weights, transforms2)
             binEventsTime = dur
             binAvg += dur
         elseif options.binmd == "boxes"
             dur = @elapsed binBoxes!(eventsHist, fastEventData, transforms2)
             binEventsTime = dur
             binAvg += dur
-	end
+        elseif options.binmd == "boxes1d"
+            dur = @elapsed binBoxes1d!(eventsHist, fastEventData, transforms2)
+            binEventsTime = dur
+            binAvg += dur
+        end
 
         println(
             "rank: ",

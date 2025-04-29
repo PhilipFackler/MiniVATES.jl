@@ -42,26 +42,42 @@ end
     fastEventData = MiniVATES.loadFastEventData(fastEventFile)
 
     h = MiniVATES.Hist3(x, y, z)
+    h1d = MiniVATES.Hist3(x, y, z)
     hf = MiniVATES.Hist3(x, y, z)
+    hf1d = MiniVATES.Hist3(x, y, z)
     hb = MiniVATES.Hist3(x, y, z)
+    hb1d = MiniVATES.Hist3(x, y, z)
 
     # try
         @time MiniVATES.binEvents!(h, eventData.events, transforms2)
+        @time MiniVATES.binEvents1d!(h1d, eventData.events, transforms2)
         @time MiniVATES.binEvents!(hf, fastEventData.events, fastEventData.weights, transforms2)
+        @time MiniVATES.binEvents1d!(hf1d, fastEventData.events, fastEventData.weights, transforms2)
         @time MiniVATES.binBoxes!(hb, fastEventData, transforms2)
+        @time MiniVATES.binBoxes1d!(hb1d, fastEventData, transforms2)
+
     # catch err
     #     code_warntype(err; interactive = true)
     # end
 
     MiniVATES.reset!(h)
+    MiniVATES.reset!(h1d)
     MiniVATES.reset!(hf)
+    MiniVATES.reset!(hf1d)
     MiniVATES.reset!(hb)
+    MiniVATES.reset!(hb1d)
     @time MiniVATES.binEvents!(h, eventData.events, transforms2)
+    @time MiniVATES.binEvents1d!(h1d, eventData.events, transforms2)
     @time MiniVATES.binEvents!(hf, fastEventData.events, fastEventData.weights, transforms2)
+    @time MiniVATES.binEvents1d!(hf1d, fastEventData.events, fastEventData.weights, transforms2)
     @time MiniVATES.binBoxes!(hb, fastEventData, transforms2)
+    @time MiniVATES.binBoxes1d!(hb1d, fastEventData, transforms2)
 
+    @test binweights(h) == binweights(h1d)
     @test binweights(h) == binweights(hf)
+    @test binweights(h) == binweights(hf1d)
     @test binweights(h) == binweights(hb)
+    @test binweights(h) == binweights(hb1d)
 
     write_cat(h)
 end
