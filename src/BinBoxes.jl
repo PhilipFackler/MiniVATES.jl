@@ -15,36 +15,33 @@ function binBoxes!(h::Hist3, events::FastEventData, transforms::Array1{SquareMat
             @inbounds begin
                 eid = t.eventIndex
                 eid2 = eid[i, 2]
+                idx = CartesianIndices((1:2, 3:4, 5:6))
+                idxn = Iterators.drop(idx, 1)
                 if t.boxType[i] == 1 && eid2 != 0
                     eid1 = eid[i, 1]
                     op = t.transforms[n]
                     if eid2 > 16
-                        vi = SMatrix{3,8,CoordType}(t.extents[i, 1], t.extents[i, 3], t.extents[i, 5],
-                                                    t.extents[i, 1], t.extents[i, 3], t.extents[i, 6],
-                                                    t.extents[i, 1], t.extents[i, 4], t.extents[i, 5],
-                                                    t.extents[i, 1], t.extents[i, 4], t.extents[i, 6],
-                                                    t.extents[i, 2], t.extents[i, 3], t.extents[i, 5],
-                                                    t.extents[i, 2], t.extents[i, 3], t.extents[i, 6],
-                                                    t.extents[i, 2], t.extents[i, 4], t.extents[i, 5],
-                                                    t.extents[i, 2], t.extents[i, 4], t.extents[i, 6])
-                        vf = op * vi
                         startIdx = MVector{3,SizeType}(0, 0, 0)
                         singleBox = true
+                        vf = op * C3[t.extents[i, 1], t.extents[i, 3], t.extents[i, 5]]
                         for j = 1:3
-                            startIdx[j] = binindex1d(t.h, j, vf[j, 1])
+                            startIdx[j] = binindex1d(t.h, j, vf[j])
                             if startIdx[j] < 1 || startIdx[j] > t.h.nbins[j]
                                 singleBox = false
                                 break
                             end
-                            for k = 2:8
-                                endIdx = binindex1d(t.h, j, vf[j, k])
+                        end
+                        for k in idxn
+                            if singleBox == false
+                                break
+                            end
+                            vf = op * C3[t.extents[i,k[1]], t.extents[i, k[2]], t.extents[i, k[3]]]
+                            for j = 1:3
+                                endIdx = binindex1d(t.h, j, vf[j])
                                 if startIdx[j] != endIdx
                                     singleBox = false
                                     break
                                 end
-                            end
-                            if singleBox == false
-                                break
                             end
                         end
                         if singleBox
@@ -89,36 +86,33 @@ function binBoxes1d!(h::Hist3, events::FastEventData, transforms::Array1{SquareM
             @inbounds begin
                 eid = t.eventIndex
                 eid2 = eid[i, 2]
+                idx = CartesianIndices((1:2, 3:4, 5:6))
+                idxn = Iterators.drop(idx, 1)
                 if t.boxType[i] == 1 && eid2 != 0
-	            eid1 = eid[i, 1]		
+                    eid1 = eid[i, 1] 
                     if eid2 > 16
-                        vi = SMatrix{3,8,CoordType}(t.extents[i, 1], t.extents[i, 3], t.extents[i, 5],
-                                                    t.extents[i, 1], t.extents[i, 3], t.extents[i, 6],
-                                                    t.extents[i, 1], t.extents[i, 4], t.extents[i, 5],
-                                                    t.extents[i, 1], t.extents[i, 4], t.extents[i, 6],
-                                                    t.extents[i, 2], t.extents[i, 3], t.extents[i, 5],
-                                                    t.extents[i, 2], t.extents[i, 3], t.extents[i, 6],
-                                                    t.extents[i, 2], t.extents[i, 4], t.extents[i, 5],
-                                                    t.extents[i, 2], t.extents[i, 4], t.extents[i, 6])
                         for op in t.transforms
-                            vf = op * vi
+                            vf = op * C3[t.extents[i,1], t.extents[i, 3], t.extents[i, 5]]
                             startIdx = MVector{3,SizeType}(0, 0, 0)
                             singleBox = true
                             for j = 1:3
-                                startIdx[j] = binindex1d(t.h, j, vf[j, 1])
+                                startIdx[j] = binindex1d(t.h, j, vf[j])
                                 if startIdx[j] < 1 || startIdx[j] > t.h.nbins[j]
                                     singleBox = false
                                     break
                                 end
-                                for k = 2:8
-                                    endIdx = binindex1d(t.h, j, vf[j, k])
+                            end
+                            for k in idxn
+                                if singleBox == false
+                                    break
+                                end
+                                vf = op * C3[t.extents[i,k[1]], t.extents[i, k[2]], t.extents[i, k[3]]]
+                                for j = 1:3
+                                    endIdx = binindex1d(t.h, j, vf[j])
                                     if startIdx[j] != endIdx
                                         singleBox = false
                                         break
                                     end
-                                end
-                                if singleBox == false
-                                    break
                                 end
                             end
                             if singleBox
