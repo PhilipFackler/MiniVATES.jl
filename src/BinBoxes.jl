@@ -15,7 +15,7 @@ function binBoxes!(h::Hist3, events::FastEventData, transforms::Array1{SquareMat
             @inbounds begin
                 eid = t.eventIndex
                 eid2 = eid[i, 2]
-                idxn = Iterators.drop(CartesianIndices((1:2, 3:4, 5:6)), 1)
+                idx = Iterators.drop(CartesianIndices((1:2, 3:4, 5:6)), 1)
                 if t.boxType[i] == 1 && eid2 != 0
                     eid1 = eid[i, 1]
                     op = t.transforms[n]
@@ -30,7 +30,7 @@ function binBoxes!(h::Hist3, events::FastEventData, transforms::Array1{SquareMat
                                 break
                             end
                         end
-                        for k in idxn
+                        for k in idx
                             if singleBox == false
                                 break
                             end
@@ -85,7 +85,7 @@ function binBoxes1d!(h::Hist3, events::FastEventData, transforms::Array1{SquareM
             @inbounds begin
                 eid = t.eventIndex
                 eid2 = eid[i, 2]
-                idxn = Iterators.drop(CartesianIndices((1:2, 3:4, 5:6)), 1)
+                idx = Iterators.drop(CartesianIndices((1:2, 3:4, 5:6)), 1)
                 if t.boxType[i] == 1 && eid2 != 0
                     eid1 = eid[i, 1]
                     if eid2 > 16
@@ -100,7 +100,7 @@ function binBoxes1d!(h::Hist3, events::FastEventData, transforms::Array1{SquareM
                                     break
                                 end
                             end
-                            for k in idxn
+                            for k in idx
                                 if singleBox == false
                                     break
                                 end
