@@ -15,8 +15,7 @@ function binBoxes!(h::Hist3, events::FastEventData, transforms::Array1{SquareMat
             @inbounds begin
                 eid = t.eventIndex
                 eid2 = eid[i, 2]
-                idx = CartesianIndices((1:2, 3:4, 5:6))
-                idxn = Iterators.drop(idx, 1)
+                idxn = Iterators.drop(CartesianIndices((1:2, 3:4, 5:6)), 1)
                 if t.boxType[i] == 1 && eid2 != 0
                     eid1 = eid[i, 1]
                     op = t.transforms[n]
@@ -35,7 +34,7 @@ function binBoxes!(h::Hist3, events::FastEventData, transforms::Array1{SquareMat
                             if singleBox == false
                                 break
                             end
-                            vf = op * C3[t.extents[i,k[1]], t.extents[i, k[2]], t.extents[i, k[3]]]
+                            vf = op * C3[t.extents[i, k[1]], t.extents[i, k[2]], t.extents[i, k[3]]]
                             for j = 1:3
                                 endIdx = binindex1d(t.h, j, vf[j])
                                 if startIdx[j] != endIdx
@@ -86,13 +85,12 @@ function binBoxes1d!(h::Hist3, events::FastEventData, transforms::Array1{SquareM
             @inbounds begin
                 eid = t.eventIndex
                 eid2 = eid[i, 2]
-                idx = CartesianIndices((1:2, 3:4, 5:6))
-                idxn = Iterators.drop(idx, 1)
+                idxn = Iterators.drop(CartesianIndices((1:2, 3:4, 5:6)), 1)
                 if t.boxType[i] == 1 && eid2 != 0
-                    eid1 = eid[i, 1] 
+                    eid1 = eid[i, 1]
                     if eid2 > 16
                         for op in t.transforms
-                            vf = op * C3[t.extents[i,1], t.extents[i, 3], t.extents[i, 5]]
+                            vf = op * C3[t.extents[i, 1], t.extents[i, 3], t.extents[i, 5]]
                             startIdx = MVector{3,SizeType}(0, 0, 0)
                             singleBox = true
                             for j = 1:3
@@ -106,7 +104,7 @@ function binBoxes1d!(h::Hist3, events::FastEventData, transforms::Array1{SquareM
                                 if singleBox == false
                                     break
                                 end
-                                vf = op * C3[t.extents[i,k[1]], t.extents[i, k[2]], t.extents[i, k[3]]]
+                                vf = op * C3[t.extents[i, k[1]], t.extents[i, k[2]], t.extents[i, k[3]]]
                                 for j = 1:3
                                     endIdx = binindex1d(t.h, j, vf[j])
                                     if startIdx[j] != endIdx
