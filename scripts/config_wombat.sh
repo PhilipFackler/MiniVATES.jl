@@ -1,12 +1,12 @@
 #!/bin/bash
 
-MV_DIR=/proj/svh/MiniVATES.jl
+MV_DIR=/ccsopen/home/4pf/MiniVATES.jl
 
 module load nvhpc/25.1
 
 export CUDA_HOME=/sw/wombat/Nvidia_HPC_SDK/Linux_aarch64/25.1/cuda/12.6
 
-export PATH=$PATH:/ccsopen/home/svh/.julia/bin
+export PATH=$PATH:/ccsopen/home/4pf/.julia/bin
 
 # rm -f $MV_DIR/Manifest.toml
 # rm -f $MV_DIR/LocalPreferences.toml
